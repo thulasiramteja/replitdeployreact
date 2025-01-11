@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-
 const UserForm = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.post('http://localhost:5000/users/add', { name, email });
+    // Use the Railway backend URL for submitting the form data
+    await axios.post('https://replitdeployreact-production.up.railway.app/users/add', { name, email });
     setName('');
     setEmail('');
   };
