@@ -1,10 +1,11 @@
-[phases.build]
-commands = [
-  "cd backend && npm install",  # Install backend dependencies
-  "cd frontend && npm install && npm run build"  # Install and build frontend
-]
+[phases]
+setup = "curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && apt-get install -y nodejs"
 
-[phases.start]
-commands = [
-  "cd backend && npm start"  # Start the backend server
-]
+[install]
+commands = ["cd backend && npm install", "cd frontend && npm install"]
+
+[build]
+commands = ["cd frontend && npm run build"]
+
+[start]
+commands = ["cd backend && npm start"]
