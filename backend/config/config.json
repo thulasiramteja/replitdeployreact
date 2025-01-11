@@ -1,0 +1,9 @@
+{
+  "development": {
+    "username": "myappuser",
+    "password": "testing",
+    "database": "myappdb",
+    "host": "postgres-service",
+    "dialect": "postgres"
+  }
+}

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-backend
+  labels:
+    app: node-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: node-backend
+  template:
+    metadata:
+      labels:
+        app: node-backend
+    spec:
+      containers:
+      - name: node-backend
+        image: thulasiramteja/node-backend:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: DB_HOST
+          value: "postgres-service"  # Points to the PostgreSQL service
+        - name: DB_USER
+          value: "myappuser"
+        - name: DB_PASSWORD
+          value: "testing"
+        - name: DB_NAME
+          value: "myappdb"
