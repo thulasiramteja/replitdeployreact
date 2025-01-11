@@ -27,5 +27,13 @@ RUN npm install \
 
 # Set up the backend to serve the application
 WORKDIR /app/backend
+
+# Expose port 3000 for backend
+EXPOSE 3000
+
+# Ensure the backend listens on the correct environment port (Railway sets it dynamically, so use the PORT environment variable)
 ENV PORT=3000
+
+# Start the backend (this should be the entry point to start the backend server)
 CMD ["npm", "start"]
+
