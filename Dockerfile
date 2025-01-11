@@ -4,10 +4,10 @@ FROM ubuntu:22.04
 # Set working directory
 WORKDIR /app
 
-# Install necessary tools and dependencies
+# Install necessary tools and Node.js 20
 RUN apt-get update \
     && apt-get install -y curl gnupg build-essential \
-    && curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
     && npm install -g npm@latest \
     && apt-get clean \
