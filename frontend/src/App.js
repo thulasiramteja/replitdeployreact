@@ -7,7 +7,8 @@ const App = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const { data } = await axios.get('https://replitdeployreact-production.up.railway.app/users/view');
+      // Update with your backend URL
+      const { data } = await axios.get('https://replitdeploybackend-production.up.railway.app/users/view');
       setUsers(data);
     };
     fetchUsers();
@@ -25,5 +26,4 @@ const App = () => {
   );
 };
 
-// Make sure you're exporting it correctly
 export default App;
