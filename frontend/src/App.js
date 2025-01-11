@@ -1,9 +1,12 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import UserForm from './components/UserForm';
+
 const App = () => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
     const fetchUsers = async () => {
-      // Replace with the Railway URL and make sure the port is correct
       const { data } = await axios.get('https://replitdeployreact-production.up.railway.app/users/view');
       setUsers(data);
     };
@@ -21,3 +24,6 @@ const App = () => {
     </div>
   );
 };
+
+// Make sure you're exporting it correctly
+export default App;
