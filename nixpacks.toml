@@ -1,11 +1,15 @@
-[phases]
-setup = { commands = ["curl -fsSL https://deb.nodesource.com/setup_16.x | bash -", "apt-get install -y nodejs"] }
+[phases.setup]
+commands = [
+  "cd backend && npm install",   # Install backend dependencies
+  "cd frontend && npm install"  # Install frontend dependencies
+]
 
-[install]
-commands = ["cd backend && npm install", "cd frontend && npm install"]
+[phases.build]
+commands = [
+  "cd frontend && npm run build"  # Build the frontend React app
+]
 
-[build]
-commands = ["cd frontend && npm run build"]
-
-[start]
-commands = ["cd backend && npm start"]
+[phases.start]
+commands = [
+  "cd backend && npm start"  # Start the backend server
+]
