@@ -1,7 +1,7 @@
 # Use a base image compatible with Railway's environment
 FROM ubuntu:22.04
 
-# Set working directory
+# Set working directory for the app
 WORKDIR /app
 
 # Install necessary tools and Node.js 20
@@ -16,35 +16,30 @@ RUN apt-get update \
 # Set environment variable to fix OpenSSL error in Node.js 20
 ENV NODE_OPTIONS="--openssl-legacy-provider"
 
-# Copy the package.json and package-lock.json for frontend and backend
-COPY frontend/package*.json ./frontend/
+# Copy the backend and frontend package files first to install dependencies
 COPY backend/package*.json ./backend/
+COPY frontend/package*.json ./frontend/
 
-# Install dependencies for backend
+# Install backend dependencies
 WORKDIR /app/backend
 RUN npm install
 
-# Install dependencies and build the frontend
+# Install frontend dependencies and build
 WORKDIR /app/frontend
+RUN npm install \
+    && npm run build
 
-# Ensure frontend public folder is copied correctly
-COPY frontend/public /app/frontend/public
-
-# Run npm install and build the frontend
-RUN npm install && npm run build
-
-# Copy all project files to the working directory
+# Copy the rest of the project files into the container
+WORKDIR /app
 COPY . .
 
-# Copy the .env file into the container (at the end)
-COPY .env .env
+# Set up environment variables (adjust based on your requirements)
+ENV NODE_ENV=production
+ENV PORT=3000
 
-# Set up the backend to serve the application
+# Expose necessary ports
+EXPOSE 3000 5000
+
+# Start the backend server (adjust if the backend serves the frontend build)
 WORKDIR /app/backend
-
-# Expose the required ports
-EXPOSE 3000
-EXPOSE 5000
-
-# Start the backend server (assuming the backend serves the frontend)
-CMD ["npm", "start"]
+CMD ["node", "server.js"]
