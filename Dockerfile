@@ -16,11 +16,11 @@ RUN apt-get update \
 # Set environment variable to fix OpenSSL error in Node.js 20
 ENV NODE_OPTIONS="--openssl-legacy-provider"
 
-# Copy only the package.json and package-lock.json first to install dependencies
+# Copy only the package.json and package-lock.json files for backend and frontend dependencies first
 COPY backend/package*.json ./backend/
 COPY frontend/package*.json ./frontend/
 
-# Install dependencies for backend
+# Install dependencies for the backend
 WORKDIR /app/backend
 RUN npm install
 
@@ -32,10 +32,10 @@ RUN npm install \
 # Copy all project files to the working directory (after installing dependencies)
 COPY . .
 
-# Copy the .env file into the container
+# Copy the .env file into the container (ensure it's located in the root directory)
 COPY .env .env
 
-# Set environment variables (if you want to set any manually)
+# Optionally, if you want to manually define the DB environment variables:
 # ENV DB_HOST=postgres.railway.internal
 # ENV DB_USER=postgres
 # ENV DB_PASSWORD=NUMjcYIIPRvLngIYUVyZaPqpobJLeCYt
@@ -44,9 +44,9 @@ COPY .env .env
 # Set up the backend to serve the application
 WORKDIR /app/backend
 
-# Expose the required ports
+# Expose the required ports (3000 for the backend, 5000 for the app server)
 EXPOSE 3000
 EXPOSE 5000
 
-# Start the backend server (assuming the backend serves the frontend)
+# Start the backend server (assuming the backend serves the frontend as well)
 CMD ["npm", "start"]
