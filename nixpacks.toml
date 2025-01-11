@@ -1,5 +1,5 @@
 [phases]
-setup = "curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && apt-get install -y nodejs"
+setup = { commands = ["curl -fsSL https://deb.nodesource.com/setup_16.x | bash -", "apt-get install -y nodejs"] }
 
 [install]
 commands = ["cd backend && npm install", "cd frontend && npm install"]
