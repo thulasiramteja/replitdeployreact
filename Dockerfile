@@ -1,7 +1,7 @@
 # Use a base image compatible with Railway's environment
 FROM ubuntu:22.04
 
-# Set working directory
+# Set working directory for the app
 WORKDIR /app
 
 # Install necessary tools and Node.js 20
@@ -16,8 +16,9 @@ RUN apt-get update \
 # Set environment variable to fix OpenSSL error in Node.js 20
 ENV NODE_OPTIONS="--openssl-legacy-provider"
 
-# Copy all project files to the working directory
-COPY . .
+# Copy only the package.json and package-lock.json first to install dependencies
+COPY backend/package*.json ./backend/
+COPY frontend/package*.json ./frontend/
 
 # Install dependencies for backend
 WORKDIR /app/backend
@@ -28,7 +29,24 @@ WORKDIR /app/frontend
 RUN npm install \
     && npm run build
 
+# Copy all project files to the working directory (after installing dependencies)
+COPY . .
+
+# Copy the .env file into the container
+COPY .env .env
+
+# Set environment variables (if you want to set any manually)
+# ENV DB_HOST=postgres.railway.internal
+# ENV DB_USER=postgres
+# ENV DB_PASSWORD=NUMjcYIIPRvLngIYUVyZaPqpobJLeCYt
+# ENV DB_NAME=railway
+
 # Set up the backend to serve the application
 WORKDIR /app/backend
-ENV PORT=3000
+
+# Expose the required ports
+EXPOSE 3000
+EXPOSE 5000
+
+# Start the backend server (assuming the backend serves the frontend)
 CMD ["npm", "start"]
