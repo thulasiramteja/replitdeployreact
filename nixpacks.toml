@@ -1,0 +1,10 @@
+[phases.build]
+commands = [
+  "cd backend && npm install",  # Install backend dependencies
+  "cd frontend && npm install && npm run build"  # Install and build frontend
+]
+
+[phases.start]
+commands = [
+  "cd backend && npm start"  # Start the backend server
+]
