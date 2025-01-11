@@ -24,12 +24,15 @@ COPY backend/package*.json ./backend/
 WORKDIR /app/backend
 RUN npm install
 
+# Explicitly copy the frontend public directory (including index.html)
+COPY frontend/public ./frontend/public
+
 # Install dependencies and build the frontend
 WORKDIR /app/frontend
 RUN npm install \
     && npm run build
 
-# Copy all project files to the working directory (including public directory)
+# Copy all project files to the working directory (including frontend/public and backend files)
 COPY . .
 
 # Copy the .env file into the container
