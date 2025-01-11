@@ -1,3 +1,5 @@
+require('dotenv').config(); // Load environment variables from .env file
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -39,14 +41,17 @@ app.get('/metrics', async (req, res) => {
   res.end(await register.metrics());
 });
 
+// Use environment variables for the Sequelize connection
 const sequelize = new Sequelize({
-  host: process.env.DB_HOST || 'postgres-service',
+  host: process.env.PGHOST,  // PostgreSQL host from .env
   dialect: 'postgres',
-  username: process.env.DB_USER || 'myappuser',
-  password: process.env.DB_PASSWORD || 'testing',
-  database: process.env.DB_NAME || 'myappdb',
+  username: process.env.POSTGRES_USER,  // PostgreSQL username from .env
+  password: process.env.POSTGRES_PASSWORD,  // PostgreSQL password from .env
+  database: process.env.POSTGRES_DB,  // PostgreSQL database name from .env
 });
 
-sequelize.sync().then(() => console.log('DB synced')).catch((err) => console.error('Failed to sync DB:', err));
+sequelize.sync()
+  .then(() => console.log('DB synced'))
+  .catch((err) => console.error('Failed to sync DB:', err));
 
-app.listen(5000, () => console.log('Server running on port 5000'));
+app.listen(process.env.PORT || 5000, () => console.log('Server running on port 5000'));
