@@ -16,7 +16,7 @@ RUN apt-get update \
 # Set environment variable to fix OpenSSL error in Node.js 20
 ENV NODE_OPTIONS="--openssl-legacy-provider"
 
-# Copy the backend and frontend package files first to install dependencies
+# Copy backend and frontend dependency files first for caching
 COPY backend/package*.json ./backend/
 COPY frontend/package*.json ./frontend/
 
@@ -24,22 +24,29 @@ COPY frontend/package*.json ./frontend/
 WORKDIR /app/backend
 RUN npm install
 
-# Install frontend dependencies and build
+# Install frontend dependencies
 WORKDIR /app/frontend
-RUN npm install \
-    && npm run build
+RUN npm install
 
-# Copy the rest of the project files into the container
+# Copy the rest of the backend and frontend project files
 WORKDIR /app
-COPY . .
+COPY backend ./backend/
+COPY frontend ./frontend/
 
-# Set up environment variables (adjust based on your requirements)
+# Ensure the .env file is copied to the appropriate location
+COPY .env ./backend/
+
+# Build the frontend
+WORKDIR /app/frontend
+RUN npm run build
+
+# Set environment variables
 ENV NODE_ENV=production
 ENV PORT=3000
 
 # Expose necessary ports
 EXPOSE 3000 5000
 
-# Start the backend server (adjust if the backend serves the frontend build)
+# Start the backend server
 WORKDIR /app/backend
 CMD ["node", "server.js"]
