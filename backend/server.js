@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { Sequelize } = require('sequelize');
@@ -47,4 +48,14 @@ const sequelize = new Sequelize({
 
 sequelize.sync().then(() => console.log('DB synced')).catch((err) => console.error('Failed to sync DB:', err));
 
-app.listen(5000, () => console.log('Server running on port 5000'));
+// Serve static files for frontend (React build)
+app.use(express.static(path.join(__dirname, 'frontend/build')));
+
+// All other routes should serve the React app
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
+});
+
+// Use the PORT provided by Railway (or fallback to 5000 if not available)
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
