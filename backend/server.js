@@ -41,14 +41,20 @@ app.get('/metrics', async (req, res) => {
   res.end(await register.metrics());
 });
 
-// Use environment variables for the Sequelize connection
-const sequelize = new Sequelize({
-  host: process.env.PGHOST,  // PostgreSQL host from .env
+// Use DATABASE_URL directly for Sequelize
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
-  username: process.env.POSTGRES_USER,  // PostgreSQL username from .env
-  password: process.env.POSTGRES_PASSWORD,  // PostgreSQL password from .env
-  database: process.env.POSTGRES_DB,  // PostgreSQL database name from .env
+  dialectOptions: {
+    ssl: {
+      require: true, // Ensure SSL is used
+      rejectUnauthorized: false, // Skip certificate verification
+    },
+  },
 });
+
+sequelize.authenticate()
+  .then(() => console.log('Connected to PostgreSQL database!'))
+  .catch((err) => console.error('Failed to connect to the database:', err));
 
 sequelize.sync()
   .then(() => console.log('DB synced'))
