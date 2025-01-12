@@ -8,7 +8,7 @@ const UserForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Use the Railway backend URL for submitting the form data
-    await axios.post('https://replitdeployreact-production.up.railway.app/users/add', { name, email });
+    await axios.post('https://replitdeployreact-production.up.railway.app:5000/users/add', { name, email });
     setName('');
     setEmail('');
   };
