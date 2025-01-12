@@ -50,7 +50,7 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
   },
 });
 
-// Define a model (e.g., "Item" for CRUD operations)
+// Define Item model (for existing CRUD operations)
 const Item = sequelize.define('Item', {
   name: {
     type: DataTypes.STRING,
@@ -62,13 +62,26 @@ const Item = sequelize.define('Item', {
   },
 });
 
-// Test database connection and sync the model
+// Define User model (for adding user data)
+const User = sequelize.define('User', {
+  username: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+});
+
+// Test database connection and sync the models
 sequelize.authenticate()
   .then(() => console.log('Connected to PostgreSQL database!'))
   .catch((err) => console.error('Failed to connect to the database:', err));
 
 sequelize.sync()
-  .then(() => console.log('Database synced'))
+  .then(() => console.log('Database synced with models'))
   .catch((err) => console.error('Failed to sync database:', err));
 
 // Root route
@@ -76,7 +89,7 @@ app.get('/', (req, res) => {
   res.send('Welcome to the CRUD Application!');
 });
 
-// CRUD Routes
+// CRUD Routes for Items
 
 // Create an item
 app.post('/items', async (req, res) => {
@@ -146,4 +159,42 @@ app.delete('/items/:id', async (req, res) => {
   }
 });
 
+// New Routes for User Data
+
+// Create a user
+app.post('/users', async (req, res) => {
+  try {
+    const { username, email } = req.body;
+    const newUser = await User.create({ username, email });
+    res.status(201).json(newUser);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to create user' });
+  }
+});
+
+// Get all users
+app.get('/users', async (req, res) => {
+  try {
+    const users = await User.findAll();
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+});
+
+// Get a single user by ID
+app.get('/users/:id', async (req, res) => {
+  try {
+    const user = await User.findByPk(req.params.id);
+    if (user) {
+      res.status(200).json(user);
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch user' });
+  }
+});
+
+// Start the server
 app.listen(process.env.PORT || 5000, () => console.log('Server running on port 5000'));
