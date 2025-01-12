@@ -62,11 +62,14 @@ sequelize.sync()
 
 // Serve React App in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'build')));
+  const buildPath = path.join(__dirname, 'build');
+  console.log('Serving static files from:', buildPath); // Debugging line to check path
+
+  app.use(express.static(buildPath));
 
   // Serve the React app for any other route
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+    res.sendFile(path.join(buildPath, 'index.html'));
   });
 }
 
