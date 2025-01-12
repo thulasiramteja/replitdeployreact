@@ -1,11 +1,11 @@
 require('dotenv').config(); // Load environment variables from .env file
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { Sequelize } = require('sequelize');
 const promClient = require('prom-client');
 const userRoutes = require('./routes/userRoutes');
+const path = require('path');
 
 const app = express();
 
@@ -59,5 +59,15 @@ sequelize.authenticate()
 sequelize.sync()
   .then(() => console.log('DB synced'))
   .catch((err) => console.error('Failed to sync DB:', err));
+
+// Serve React App in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'build')));
+
+  // Serve the React app for any other route
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  });
+}
 
 app.listen(process.env.PORT || 5000, () => console.log('Server running on port 5000'));
